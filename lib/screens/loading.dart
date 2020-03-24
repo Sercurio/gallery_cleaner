@@ -6,6 +6,7 @@ class Loading extends StatefulWidget {
   _LoadingState createState() => _LoadingState();
 }
 
+//TODO peut etre virer cette partie de routes qui est inutile
 class _LoadingState extends State<Loading> {
   GalleryHelper galleryHelper = new GalleryHelper(directory: 'Camera');
 

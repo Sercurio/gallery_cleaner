@@ -4,15 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutterapp/screens/loading.dart';
 import 'package:swipe_stack/swipe_stack.dart';
 
-void main() => runApp(MaterialApp(
-      title: 'GalleryCleaner',
-      initialRoute: '/',
-      routes: {'/': (context) => Loading(), '/cleaner': (context) => Home()},
-      theme: ThemeData(
-          primarySwatch: Colors.blueGrey,
-          backgroundColor: Colors.blueAccent,
-          bottomAppBarColor: Colors.white),
-    ));
+void main() => runApp(
+      MaterialApp(
+        title: 'GalleryCleaner',
+        initialRoute: '/',
+        routes: {
+          '/': (context) => Loading(),
+          '/cleaner': (context) => Home(),
+        },
+        theme: ThemeData(
+            primarySwatch: Colors.blueGrey,
+            backgroundColor: Colors.blueAccent,
+            bottomAppBarColor: Colors.white),
+      ),
+    );
 
 class Home extends StatefulWidget {
   Home({Key key, this.title}) : super(key: key);
@@ -60,6 +65,8 @@ class _HomeState extends State<Home> {
               debugPrint("onRewind $index $position"),
         ),
       ),
+      //TODO remplacer BottomNavigationBar par des boutons avec un layout adapté
+      //TODO croissant, decroissant, shuffle, undo
       bottomNavigationBar: Opacity(
         opacity: 0.6,
         child: Row(
