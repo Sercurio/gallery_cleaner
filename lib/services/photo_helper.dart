@@ -9,12 +9,8 @@ class GalleryHelper {
 
   GalleryHelper({this.directory});
 
-  //TODO Voir pourquoi a certains lancement les photos ne sont pas recupérées
   Future<bool> askPermissionForStorage() async {
-    final PermissionHandler _permissionHandler = PermissionHandler();
-    Map result =
-        await _permissionHandler.requestPermissions([PermissionGroup.storage]);
-    if (result[PermissionGroup.storage] == PermissionStatus.granted) {
+    if (await Permission.photos.isGranted) {
       return true;
     } else {
       return false;
@@ -24,7 +20,7 @@ class GalleryHelper {
   //TODO gerer les vidéos avec autoplay
   bool isPhoto(FileSystemEntity fse) {
     return !fse.path
-            .substring(fse.path.lastIndexOf('/') +1, fse.path.length)
+            .substring(fse.path.lastIndexOf('/') + 1, fse.path.length)
             .startsWith('.') &&
         !fse.path
             .substring(fse.path.lastIndexOf('/') + 1, fse.path.length)
