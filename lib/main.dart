@@ -29,6 +29,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  bool _isLoading = true;
   GalleryHelper _galleryHelper = GalleryHelper(directory: 'Camera');
   List<File> galleryPhotos = new List();
   List<File> selectedPhotos = new List();
@@ -43,6 +44,7 @@ class _HomeState extends State<Home> {
             galleryPhotos = photos;
           },
         );
+        _isLoading = false;
       },
     );
   }
@@ -67,7 +69,7 @@ class _HomeState extends State<Home> {
       ),
       body: Container(
         color: Colors.black26,
-        child: galleryPhotos == null
+        child: _isLoading
             ? Center(
                 child: Text('Loading...'),
               )
