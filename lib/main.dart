@@ -29,14 +29,22 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  GalleryHelper _galleryHelper;
+  GalleryHelper _galleryHelper = GalleryHelper(directory: 'Camera');
+  List<File> galleryPhotos = new List();
   List<File> selectedPhotos = new List();
 
   @override
   void initState() {
     super.initState();
-    _galleryHelper = GalleryHelper(directory: 'Camera');
-    _galleryHelper.getPhotos();
+    _galleryHelper.getPhotos().then(
+      (photos) {
+        setState(
+          () {
+            galleryPhotos = photos;
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -48,43 +56,45 @@ class _HomeState extends State<Home> {
         title: Text('GalleryCleaner'),
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.check),
-              color: Colors.white,
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/validation',
-                    arguments: {'photos': selectedPhotos});
-              }),
+            icon: Icon(Icons.check),
+            color: Colors.white,
+            onPressed: () {
+              Navigator.pushNamed(context, '/validation',
+                  arguments: {'photos': selectedPhotos});
+            },
+          ),
         ],
       ),
-      body: _galleryHelper.photos == null
-          ? Center(
-              child: Container(
+      body: Container(
+        color: Colors.black26,
+        child: galleryPhotos == null
+            ? Center(
                 child: Text('Loading...'),
-              ),
-            )
-          : Container(
-              color: Colors.black26,
-              child: SwipeStack(
-                children: _galleryHelper.photos.map((f) {
-                  return SwiperItem(
+              )
+            : SwipeStack(
+                children: galleryPhotos.map(
+                  (f) {
+                    return SwiperItem(
                       builder: (SwiperPosition position, double progress) {
-                    return Center(child: Image.file(f));
-                  });
-                }).toList(),
+                        return Center(child: Image.file(f));
+                      },
+                    );
+                  },
+                ).toList(),
                 visibleCount: 2,
                 stackFrom: StackFrom.None,
                 translationInterval: 1,
                 scaleInterval: 0.01,
                 onEnd: () => debugPrint("onEnd"),
-                onSwipe: (int index, SwiperPosition position) =>
-                    position == SwiperPosition.Right
-                        ? selectedPhotos.add(_galleryHelper.photos[index])
-                        : print('lol'),
+                onSwipe: (int index, SwiperPosition position) => {
+                  if (position == SwiperPosition.Right)
+                    selectedPhotos.add(galleryPhotos[index])
+                },
                 //debugPrint("onSwipe $index $position"),
                 onRewind: (int index, SwiperPosition position) =>
                     debugPrint("onRewind $index $position"),
               ),
-            ),
+      ),
       //TODO remplacer BottomNavigationBar par des boutons avec un layout adapté
       bottomNavigationBar: Opacity(
         opacity: 0.6,
@@ -94,29 +104,35 @@ class _HomeState extends State<Home> {
             IconButton(
               icon: Icon(Icons.arrow_upward),
               onPressed: () {
-                setState(() {
-                  _galleryHelper.photos.sort((a, b) =>
-                      b.lastModifiedSync().compareTo(a.lastModifiedSync()));
-                });
+                setState(
+                  () {
+                    galleryPhotos.sort((a, b) =>
+                        b.lastModifiedSync().compareTo(a.lastModifiedSync()));
+                  },
+                );
                 print('croissant');
               },
             ),
             IconButton(
               icon: Icon(Icons.arrow_downward),
               onPressed: () {
-                setState(() {
-                  _galleryHelper.photos.sort((a, b) =>
-                      a.lastModifiedSync().compareTo(b.lastModifiedSync()));
-                });
+                setState(
+                  () {
+                    galleryPhotos.sort((a, b) =>
+                        a.lastModifiedSync().compareTo(b.lastModifiedSync()));
+                  },
+                );
                 print('decroissant');
               },
             ),
             IconButton(
               icon: Icon(Icons.repeat),
               onPressed: () {
-                setState(() {
-                  _galleryHelper.photos.shuffle();
-                });
+                setState(
+                  () {
+                    galleryPhotos.shuffle();
+                  },
+                );
                 print('hasard');
               },
             ),

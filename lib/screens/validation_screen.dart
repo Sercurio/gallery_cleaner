@@ -17,7 +17,7 @@ class _ValidationScreenState extends State<ValidationScreen> {
   @override
   Widget build(BuildContext context) {
     final Map data = ModalRoute.of(context).settings.arguments;
-    final List<File> photos = data['photos'];
+    final List<File> selectedItems = data['photos'];
 
     return Scaffold(
       appBar: AppBar(
@@ -25,33 +25,36 @@ class _ValidationScreenState extends State<ValidationScreen> {
         title: Text('GalleryCleaner'),
       ),
       body: new GridView.builder(
-          itemCount: photos.length,
-          gridDelegate:
-              new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-          itemBuilder: (BuildContext context, int index) {
-            return new Card(
-              elevation: 0,
-              child: new InkResponse(
-                child: Image.file(photos[index]),
-                onTap: () {
-                  photos.removeAt(index);
-                  setState(() {});
-                },
-              ),
-            );
-          }),
+        itemCount: selectedItems.length,
+        gridDelegate:
+            new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+        itemBuilder: (BuildContext context, int index) {
+          return new InkResponse(
+            child: Image.file(selectedItems[index]),
+            onTap: () {
+              selectedItems.removeAt(index);
+              setState(() {});
+            },
+          );
+        },
+      ),
       bottomNavigationBar: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          Builder(builder: (BuildContext context) {
-            return IconButton(
+          Builder(
+            builder: (BuildContext context) {
+              return IconButton(
                 icon: Icon(Icons.check),
                 onPressed: () {
-                  Scaffold.of(context).showSnackBar(new SnackBar(
-                    content: new Text("Removing from Library"),
-                  ));
-                });
-          }),
+                  Scaffold.of(context).showSnackBar(
+                    new SnackBar(
+                      content: new Text("Removing from Library"),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
         ],
       ),
     );
